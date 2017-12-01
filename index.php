@@ -1,5 +1,3 @@
-
-
 <?php include('header.php');?>
     <!--sidebar-menu-->
 <script src="js/jquery.dataTables.min.js"></script>
@@ -24,13 +22,18 @@
 
 <?php
 include('connection.php');
-$sql ="SELECT * FROM `stop_overs`";
+if($isadmin == 'true')
+{
+  $sql ="SELECT * FROM `stop_overs`";
+}
+else
+{
+$sql ="SELECT * FROM `stop_overs` where `place_name` ='$stage'";
+}
+
+//echo $sql;
 $r = mysqli_query($con,$sql);
 $result = array();
-
-
-
-
 while($row = mysqli_fetch_array($r))
 {
   $place_name = $row['place_name'];
@@ -66,15 +69,13 @@ while($row = mysqli_fetch_array($r))
 
         $sql ="SELECT * FROM `vehiclle_queus`  WHERE `stage` ='$place_name'   ORDER BY timestamp DESC";
         //SELECT * FROM `vehiclle_queus` ORDER BY `vehiclle_queus`.`timestamp` DESC
-
         $r2 = mysqli_query($con,$sql);
         $count = mysqli_num_rows($r2);
         $post=$count;
         $result = array();
         while($row2 = mysqli_fetch_array($r2))
         {
-          $number_plate=$row2['number_plate'];
-
+$number_plate=$row2['number_plate'];
 $sql="UPDATE `vehiclle_queus` SET `position` = '$post' WHERE `number_plate` = '$number_plate'";
 mysqli_query($con,$sql);
 
@@ -108,10 +109,6 @@ mysqli_query($con,$sql);
 
                 </ul>
             </div>
-            <!--End-Action boxes-->
-
-
-
             </div>
             <!--End-Chart-box-->
             <hr/>

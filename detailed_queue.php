@@ -1,8 +1,4 @@
 <?php include('header.php');?>
-
-
-
-
 <div id="content">
 
 
@@ -134,49 +130,10 @@ function tableText(tableCell) {
 include('connection.php');
 function get_next_location($number_plate, $current_location)
 {
-  $vehicle_queuse_array = array();
-  $vehicle_number_plates = array();
-$con = mysqli_connect('localhost', 'root', 'Wimme1234', 'kiemwasacco');
-$s0="SELECT * FROM `vehiclle_queus` WHERE `stage` ='$current_location' ORDER BY `vehiclle_queus`.`timestamp` ASC LIMIT 4";
-$s = mysqli_query($con,$s0);
-$count = mysqli_num_rows($s);
-  while($rows= mysqli_fetch_array($s))
-  {
-    $vehicle_queuse_array[] = $rows['timestamp'];
-    $vehicle_number_plates[] = $rows['number_plate'];
-  }
-
-  $count= sizeof($vehicle_queuse_array);
-  $vehicle_current_location = array();
-
-  for($i=0; $i<$count; $i++)
-  {
-    $current_vehicle = $vehicle_number_plates[$i];
-    $sql1="SELECT * FROM `vehicle_locations` where `number_plate` = '$current_vehicle'";
-    $ss = mysqli_query($con,$sql1);
-    $count2 = mysqli_num_rows($ss);
-    if($count2>0)
-    {
-      while ($mum= mysqli_fetch_array($ss))
-      {
-        $vehicle_current_location[]= $mum['current_locatiom'];
-      }
-    }
-    else
-    {
-    $vehicle_current_location[]= 'empty';
-    }
-  }
-
-  //print_r($vehicle_current_location);
-  $place_one=$vehicle_current_location[0];
-  $place_two=$vehicle_current_location[1];
-  $place_three=$vehicle_current_location[2];
-
-  //GET ALL VIABLE LOCATIONS
   $viable_locations=array();
   $viable_locations_backub=array();
 
+  $con = mysqli_connect('localhost', 'root', 'Wimme1234', 'kiemwasacco');
   $sql1="SELECT * FROM `stop_overs`";
   $ss = mysqli_query($con,$sql1);
   $count2 = mysqli_num_rows($ss);
@@ -186,108 +143,160 @@ $count = mysqli_num_rows($s);
     $viable_locations_backub[]= $mum['place_name'];
   }
 
+$vehicle_queuse_array = array();
+$vehicle_number_plates = array();
 
-  //print_r($viable_locations_backub);
-  //    unset($array[1]);
+$s0="SELECT * FROM `vehiclle_queus` WHERE `stage` ='$current_location' ORDER BY `vehiclle_queus`.`timestamp` ASC LIMIT 5";
+$s = mysqli_query($con,$s0);
+$count = mysqli_num_rows($s);
+$int =0;
+
+  while($rows= mysqli_fetch_array($s))
+  {
+
+    $vehicle_queuse_array[] = $rows['timestamp'];
+    $vehicle_number_plates[] = $rows['number_plate'];
+
+  }
+  $s0="SELECT * FROM `vehiclle_queus` WHERE `stage` ='$current_location' ORDER BY `vehiclle_queus`.`timestamp` ASC LIMIT 5";
+  $s = mysqli_query($con,$s0);
+  $count = mysqli_num_rows($s);
+  $int =0;
+  while($rows= mysqli_fetch_array($s))
+  {
+
+
+    $current_vehicle = $rows['number_plate'];
+    $sql1="SELECT * FROM `vehicle_locations` where `number_plate` = '$current_vehicle' LIMIT 1";
+    $ss = mysqli_query($con,$sql1);
+    $count2 = mysqli_num_rows($ss);
+    if($count2>0)
+    {
+      while ($mum= mysqli_fetch_array($ss))
+      {
+        $vehicle_current_location= $mum['current_locatiom'];
+      }
+    }
+    else
+    {
+    $vehicle_current_location= 'empty';
+    }
+
+
+    //echo $vehicle_current_location ."<br />";
+
+
+
+if($vehicle_current_location!=$current_location)
+{
+echo "Vehicle not at the current location. Move on";
+}
+else
+{
+  echo $vehicle_number_plates[0];
+
+
+}
+
+
+
+
+
+    // $place_one=$vehicle_current_location[0];
+    // $place_two=$vehicle_current_location[1];
+    // $place_three=$vehicle_current_location[2];
+
+    //GET ALL VIABLE LOCATIONS
+
+
+    //print_r($viable_locations_backub);
+    //    unset($array[1]);
+    //
+
+  // echo $place_one;
+  // if($place_one===$current_location)
+  // {
+  // //the first vehicle in the queu is at already at the stage. so, its a no go zone. Skip!
+  // //we get that location so that it wont be considered
+  //   $sql="select * from `vehicle_locations` where  `number_plate` = '$vehicle_number_plates[0]'";
+  //   $ss = mysqli_query($con,$sql1);
+  //   while ($mum= mysqli_fetch_array($ss))
+  //   {
+  //     $next_location_for_location_one= $mum['next_location'];
+  //   }
+  //   //unset($viable_locations[1]);
+  //  unset_array($viable_locations, $current_location);
+  // }
+  // if($place_two===$current_location)
+  // {
+  // //the first vehicle in the queu is at already at the stage. so, its a no go zone. Skip!
+  // //we get that location so that it wont be considered
+  //   $sql="select * from `vehicle_locations` where  `number_plate` = '$vehicle_number_plates[0]'";
+  //   $ss = mysqli_query($con,$sql1);
+  //   while ($mum= mysqli_fetch_array($ss))
+  //   {
+  //     $next_location_for_location_one= $mum['next_location'];
+  //   }
+  //   unset_array($viable_locations, $current_location);
   //
+  // }
+  // if($place_three===$current_location)
+  // {
+  // //the first vehicle in the queu is at already at the stage. so, its a no go zone. Skip!
+  // //we get that location so that it wont be considered
+  //   $sql="select * from `vehicle_locations` where  `number_plate` = '$vehicle_number_plates[0]'";
+  //   $ss = mysqli_query($con,$sql1);
+  //   while ($mum= mysqli_fetch_array($ss))
+  //   {
+  //     $next_location_for_location_one= $mum['next_location'];
+  //   }
+  //  unset_array($viable_locations, $current_location);
+  //
+  // }
+   //print_r($viable_locations);
 
+//    if(sizeof($viable_locations)===0)
+//    {
+//      //all locations have been booked!
+//    }
+//    else
+//   {
+//   //we only have these locations to choose from
+//
+//   for ($i=0; $i<sizeof($viable_locations);$i++)
+//   {
+//     $loc=$viable_locations[$i];
+//     $sql ="SELECT * FROM `vehiclle_queus`  WHERE `stage` ='$loc' and `number_plate` =  '$number_plate'";
+//     $r2 = mysqli_query($con,$sql);
+//     $count = mysqli_num_rows($r2);
+//     $post=$count;
+//     $positions = array();
+//     while($row2 = mysqli_fetch_array($r2))
+//     {
+//     $pos = $row2['position'];
+//     $positions[]=$pos;
+//
+//     }
+//   }
+//
+//
+//   $res4 = max($positions);
+//   $key = array_search($res4, $positions);
+//   $next_location=$viable_locations[$key];
+//
+//   $update_sql="UPDATE `vehicle_locations` SET `next_location` = '$next_location' WHERE `vehicle_locations`.`number_plate` = '$number_plate'";
+//   mysqli_query($con,$update_sql);
+//
+//   echo "<br />for vehicle with ".$number_plate." which is currently at  ".$current_location." we recommend it goes to ". $viable_locations[$key];
+//
+// }
 
-
-if($place_one===$current_location)
-{
-//the first vehicle in the queu is at already at the stage. so, its a no go zone. Skip!
-//we get that location so that it wont be considered
-  $sql="select * from `vehicle_locations` where  `number_plate` = '$vehicle_number_plates[0]'";
-  $ss = mysqli_query($con,$sql1);
-  while ($mum= mysqli_fetch_array($ss))
-  {
-    $next_location_for_location_one= $mum['next_location'];
-  }
-  //unset($viable_locations[1]);
- unset_array($viable_locations, $current_location);
 }
-if($place_two===$current_location)
-{
-//the first vehicle in the queu is at already at the stage. so, its a no go zone. Skip!
-//we get that location so that it wont be considered
-  $sql="select * from `vehicle_locations` where  `number_plate` = '$vehicle_number_plates[0]'";
-  $ss = mysqli_query($con,$sql1);
-  while ($mum= mysqli_fetch_array($ss))
-  {
-    $next_location_for_location_one= $mum['next_location'];
-  }
-  unset_array($viable_locations, $current_location);
-
-}
-if($place_three===$current_location)
-{
-//the first vehicle in the queu is at already at the stage. so, its a no go zone. Skip!
-//we get that location so that it wont be considered
-  $sql="select * from `vehicle_locations` where  `number_plate` = '$vehicle_number_plates[0]'";
-  $ss = mysqli_query($con,$sql1);
-  while ($mum= mysqli_fetch_array($ss))
-  {
-    $next_location_for_location_one= $mum['next_location'];
-  }
- unset_array($viable_locations, $current_location);
-
-}
- //print_r($viable_locations);
-
- if(sizeof($viable_locations)===0)
- {
-   //all locations have been booked!
- }
- else
-{
-//we only have these locations to choose from
-
-for ($i=0; $i<sizeof($viable_locations);$i++)
-{
-  $loc=$viable_locations[$i];
-  $sql ="SELECT * FROM `vehiclle_queus`  WHERE `stage` ='$loc' and `number_plate` =  '$number_plate'";
-  $r2 = mysqli_query($con,$sql);
-  $count = mysqli_num_rows($r2);
-  $post=$count;
-  $positions = array();
-  while($row2 = mysqli_fetch_array($r2))
-  {
-  $pos = $row2['position'];
-  $positions[]=$pos;
-
-  }
-}
-
-
-$res4 = max($positions);
-$key = array_search($res4, $positions);
-$next_location=$viable_locations[$key];
-
-$update_sql="UPDATE `vehicle_locations` SET `next_location` = '$next_location' WHERE `vehicle_locations`.`number_plate` = '$number_plate'";
-mysqli_query($con,$update_sql);
-
-echo "<br />for vehicle with ".$number_plate." which is currently at  ".$current_location." we recommend it goes to ". $viable_locations[$key];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
  }
 
-}
+
 
 function unset_array($array_locations, $current_location)
 {
