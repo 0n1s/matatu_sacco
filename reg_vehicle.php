@@ -104,8 +104,8 @@ if($result)
   {
     $place_name = $row['place_name'];
 
-  $sql="INSERT INTO `vehiclle_queus` (`id`, `number_plate`, `timestamp`, `stage`, `vehicle_condition`) VALUES
-   (NULL, '$number_plate', CURRENT_TIMESTAMP, '$place_name ', 'GOOD')";
+  $sql="INSERT INTO `vehiclle_queus` (`id`, `number_plate`, `timestamp`, `stage`, `vehicle_condition`, `position`) VALUES
+   (NULL, '$number_plate', CURRENT_TIMESTAMP, '$place_name ', 'GOOD', 'null')";
    $insertr = mysqli_query($con, $sql);
 
   }

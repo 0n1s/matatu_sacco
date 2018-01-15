@@ -56,8 +56,8 @@ while($row = mysqli_fetch_array($r))
             <th>Position</th>
             <th>Vehicle reg number</th>
             <th>Last travelled</th>
-            <th>Last destination</th>
-            <th>Next destination</th>
+            <th>Stage name</th>
+<!--            <th>Next destination</th>-->
             <th>Vehicle status</th>
           </tr>
         </thead>
@@ -86,8 +86,8 @@ mysqli_query($con,$sql);
           <td><?php echo $post; $post--; ?></td>
           <td><?php echo $row2['number_plate'] ?> </td>
           <td><?php echo $row2['timestamp'] ?></td>
-          <td>Nairobi</td>
-          <td>Kisii</td>
+          <td><?php echo $row2['stage'] ?></td>
+<!--          <td>Kisii</td>-->
           <td><?php echo $row2['vehicle_condition'] ?> </td>
         </tr>
         <?php
