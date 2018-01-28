@@ -1,7 +1,7 @@
 
 <?php
 
-$con = mysqli_connect('localhost', 'root', 'Wimme1234', 'kiemwasacco');
+$con = mysqli_connect('localhost', 'root', '', 'kiemwasacco');
 
 if(!$con)
 {

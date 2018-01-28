@@ -1,24 +1,15 @@
 <?php include('header.php');?>
 <div id="content">
 
-
     <div id="content-header">
         <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
     </div>
-
-
-
-
     <div class="widget-box">
         <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
             <h5> Vehicle departure queue in
                 <?php
-
             echo $_GET['place_id'];
-
             $place_id= $_GET['place_id'];
-
-
             ?>
             </h5>
         </div>
@@ -30,7 +21,6 @@
                         <th>Vehicle reg number</th>
                         <th>Current location</th>
                         <th>Next destination</th>
-
                         <th>Viable Actions</th>
                     </tr>
                 </thead>
@@ -54,13 +44,16 @@ if(!isset($_GET['place_id']))
           $result = array();
           while($row2 = mysqli_fetch_array($r2))
           {
-            $postion = $row2['position'];
+
+
+
+
+$postion = $row2['position'];
 $destination="Unknown";
 $number_plate = $row2['number_plate'];
 $sql="SELECT * FROM `vehicle_locations`  where `number_plate` = '$number_plate' ";
 
 //get_next_location($number_plate, $place_id);
-
 $r0 = mysqli_query($con,$sql);
 $count = mysqli_num_rows($r0);
 if($count>0)
@@ -75,6 +68,18 @@ else {
   $current_location ="Unknwon";
 
 }
+
+
+$location= "Travelling to ".$place_id;
+$other= "Vehicle broke down near ".$place_id;
+
+
+
+
+if(($current_location == $place_id) || ($current_location == $location) || ($current_location == $other))
+{
+
+
           ?>
 
                         <tr class="gradeY">
@@ -132,7 +137,7 @@ else {
   $count2 = mysqli_num_rows($ss);
   while ($mum= mysqli_fetch_array($ss))
   {
-$name = $mum['place_name'];
+      $name = $mum['place_name'];
       if($name===$place_id)
       {
 
@@ -165,27 +170,35 @@ $name = $mum['place_name'];
                             <td>
                                 <?php
 $url_arrival="action.php?number_plate=".$number_plate."&current_location=".$place_id."&action=arrival_report";
-$url_breakdown="action.php?number_plate=".$number_plate."&current_location=".$current_location."&action=breakdown_report";
+$url_breakdown="action.php?number_plate=".$number_plate."&current_location=".$place_id."&action=breakdown_report";
 $url_depart="action.php?number_plate=".$number_plate."&current_location=".$place_id."&action=departing_report"."&destination=";
 
  ?>
   <button class="btn btn-primary btn-block btn-mini" onclick="location.href='<?php echo $url_arrival ?>'"> Report Arival </button>
   <button class="btn btn-info btn-block btn-mini<?php if (strpos($current_location, " Vehicle ") === 0){echo ' disabled'; $url_breakdown ='#';}?>" onclick="location.href='<?php echo $url_breakdown?>'"> Report breakdown </button>
-  <button class="btn btn-info btn-block btn-mini<?php
-     if (strpos($current_location, " Vehicle ") === 0 || $current_location != $place_id )
+  <button id = "button_depart" class="btn btn-info btn-block btn-mini
+  <?php
+     if ( $current_location != $place_id )
      {
-         echo ' disabled'; $url_depart ='#';
-
+         echo ' disabled'; //$url_depart ='#';
+         ?>
+"> Waiting for arrival
+         <?php
      }
+    else
+    {
 
-
-else{
-
-}
-     ?>" onclick="gotonextevent()"> Depart </button>
+?>
+  " onclick="gotonextevent()"> Depart now
+<?php
+    }
+     ?>
+    </button>
                             </td>
                         </tr>
-                        <?php
+            <?php
+
+}
           }
 
           ?>
@@ -211,33 +224,62 @@ else{
 function gotonextevent()
 {
 
+
   var selecteditem = GetSelectedItem('next_destination');
   console.log(selecteditem);
       var txt;
       var person = prompt('Please enter the number of passangers in the vehicle', '0');
       if (person == null || person == '')
       {
+
       }
       else
       {
-     console.log('person '+person);
+   console.log('person '+person);
         var fare_per_person = prompt('Please enter the fare per person.', '0');
         if (fare_per_person == null || fare_per_person == '')
         {
         }
          else
         {
-          console.log('fare per person '+fare_per_person);
-          console.log('person '+person);
 
-          console.log("url" + goto);
-          var total_amt = fare_per_person*person;
+          var fuel_expenses = prompt('Please enter the fuel expense incurred', '0');
+          if (fuel_expenses == null || fuel_expenses == '')
+          {
+          }
+          else
+          {
 
-var url = '<?php echo $url_depart; ?>';
-var goto = url + selecteditem+'&totalamt='+total_amt;
+
+            var other_expenses = prompt('Please enter the total of other expenses', '0');
+            if (other_expenses == null || other_expenses == '')
+            {
+            }
+            else
+            {
+              console.log('fare per person '+fare_per_person);
+              console.log('person '+person);
+              console.log('other_expenses' +other_expenses);
+              console.log('fuel_expenses'+ fuel_expenses);
+
+              var total_amt = fare_per_person*person;
+              var url = '<?php echo $url_depart; ?>';
+              var goto = url + selecteditem+'&totalamt='+total_amt+'&other_expenses='+other_expenses+'&fuel_expenses='+fuel_expenses;
+
+              console.log("url ->" + goto);
+              location.href =goto;
 
 
-        location.href =goto;
+
+            }
+
+
+          }
+
+
+
+
+
         }
 
       }

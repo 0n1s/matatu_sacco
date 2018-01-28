@@ -102,11 +102,13 @@ if($result)
   $r2 = mysqli_query($con,$sql);
   while($row= mysqli_fetch_array($r2))
   {
-    $place_name = $row['place_name'];
+  $place_name = $row['place_name'];
+  //SELECT * FROM `vehiclle_queus`
 
   $sql="INSERT INTO `vehiclle_queus` (`id`, `number_plate`, `timestamp`, `stage`, `vehicle_condition`, `position`) VALUES
-   (NULL, '$number_plate', CURRENT_TIMESTAMP, '$place_name ', 'GOOD', 'null')";
+   (NULL, '$number_plate', CURRENT_TIMESTAMP, '$place_name ', 'GOOD', '0')";
    $insertr = mysqli_query($con, $sql);
+
 
   }
 
@@ -127,7 +129,7 @@ if($result)
 else
 {
 
-  echo "<script>alert('Registration Failed. Please try again later');</script>";
+  echo "<script>alert('Registration Failed. Please try again later   ');</script>";
 
 }
 

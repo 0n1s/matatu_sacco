@@ -17,9 +17,6 @@
 
 
 <!--                    <li class="bg_lg span3"> <a href="charts.html"> <i class="icon-signal"></i> Charts</a> </li>-->
-
-
-
 <?php
 include('connection.php');
 if($isadmin == 'true')
@@ -66,7 +63,6 @@ while($row = mysqli_fetch_array($r))
         <?php
         include('connection.php');
         //SELECT * FROM `vehiclle_queus` ORDER BY `vehiclle_queus`.`timestamp` DESC
-
         $sql ="SELECT * FROM `vehiclle_queus`  WHERE `stage` ='$place_name'   ORDER BY timestamp DESC";
         //SELECT * FROM `vehiclle_queus` ORDER BY `vehiclle_queus`.`timestamp` DESC
         $r2 = mysqli_query($con,$sql);
@@ -78,8 +74,6 @@ while($row = mysqli_fetch_array($r))
 $number_plate=$row2['number_plate'];
 $sql="UPDATE `vehiclle_queus` SET `position` = '$post' WHERE `number_plate` = '$number_plate'";
 mysqli_query($con,$sql);
-
-
         ?>
 
         <tr class="gradeX">

@@ -78,10 +78,12 @@ while($row= mysqli_fetch_array($r2))
                     <thead>
                         <tr>
                             <th>id</th>
+                            <th>Date</th>
                             <th>Number plate</th>
                             <th>Departure location</th>
                             <th>Destination location</th>
-                            <th>Date</th>
+                            <th>Fuel expenses</th>
+                            <th>Other expenses</th>
                             <th>Ammount</th>
                         </tr>
                     </thead>
@@ -103,6 +105,8 @@ $sql = "SELECT * FROM `revenues` where `vehicle` = '$number_plate' ";
         $post=$count;
         $result = array();
         $tamount = 0;
+        $fuel_t= 0;
+        $other_t =0 ;
         while($row2 = mysqli_fetch_array($r2))
         {
         ?>
@@ -112,6 +116,8 @@ $sql = "SELECT * FROM `revenues` where `vehicle` = '$number_plate' ";
                                     <?php echo $post; $post--; ?>
                                 </td>
                                 <td>
+                                    <?php echo $row2['date'] ?> </td>
+                                <td>
                                     <?php echo $row2['vehicle'] ?> </td>
                                 <td>
                                     <?php echo $row2['destination_from'] ?>
@@ -119,8 +125,18 @@ $sql = "SELECT * FROM `revenues` where `vehicle` = '$number_plate' ";
                                 <td>
                                     <?php echo $row2['destination_to'] ?>
                                 </td>
+
                                 <td>
-                                    <?php echo $row2['date'] ?> </td>
+                                    <?php echo $row2['fuel_expenses'];
+                              $fuel_t= $fuel_t + $row2['fuel_expenses'];
+
+                                     ?> </td>
+
+                                     <td>
+                                         <?php echo $row2['other_expenses'];
+                             $other_t= $other_t + $row2['other_expenses'];
+
+                                          ?> </td>
 
                                     <td>
                                         <?php echo $row2['revenue_collected'];
@@ -154,6 +170,8 @@ $tamount= $tamount + $row2['revenue_collected'];
                             <th></th>
                             <th></th>
                             <th></th>
+                            <th><?php echo $fuel_t ;?></th>
+                            <th><?php echo $other_t ;?></th>
                             <th><?php echo $tamount ;?></th>
                         </tr>
                     </tfoot>
@@ -161,6 +179,14 @@ $tamount= $tamount + $row2['revenue_collected'];
             </div>
         </div>
     </div>
+
+
+    <div class="alert alert-success "> <a class="close" data-dismiss="alert" href="#">×</a>
+
+ <?php
+$rev = $tamount - ($other_t+$fuel_t);
+  echo  "Net profit ".$rev;    ?>
+                             </div>
 
 </div>
 

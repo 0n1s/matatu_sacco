@@ -122,7 +122,7 @@ echo "Registration failed!!!";
            $count = mysqli_num_rows($r);
            if($count>0)
            {
-             $sql = "UPDATE `vehicle_locations` SET `current_locatiom` = '$current_location1' WHERE `vehicle_locations`.`number_plate` = '$number_plate'";
+             $sql = "UPDATE `vehicle_locations` SET `current_locatiom` = '$current_location1' WHERE `number_plate` = '$number_plate'";
              if(mysqli_query($con, $sql))
              {
 
@@ -210,9 +210,10 @@ echo "Registration failed!!!";
 
  else if($action == 'departing_report')
  {
-
+//http://localhost/kiemwa/action.php?number_plate=KDB%20567%20G&current_location=Karatina&action=departing_report&destination=Nairobi&totalamt=2000&other_expenses=450$fuel_expenses=1000
 $number_plate= $_GET['number_plate'];
 //monthly collections = 50000
+
 $monthly_collections = 50000;
 
 $now = new \DateTime('now');
@@ -243,57 +244,13 @@ $total_amt=$total_amt+$amt_from_db;
 if($total_amt > $monthly_collections )
 {
 
-// $sql =  "SELECT * FROM `vehicle_locations` WHERE `current_locatiom` = '$current_location' ";
-// $r = mysqli_query($con,$sql);
-// $count = mysqli_num_rows($r);
-// $results = array();
-// while($row2 = mysqli_fetch_array($r))
-// {
-// $number_plate = $row2['number_plate'];
-// $results[] = $number_plate;
-// }
-// $size_of_number_plates = sizeof($results);
-// for($i=0; $i < $size_of_number_plates; $i++)
-// {
-//   $number_plate = $results[$i];
-//   $sql = "SELECT * FROM `revenues` WHERE  `vehicle` = '$number_plate' ";
-//   $r = mysqli_query($con,$sql);
-//   $count = mysqli_num_rows($r);
-//   if($count>0)
-//   {
-//     $total_amt = 0;
-//     while($row2 = mysqli_fetch_array($r))
-//   {
-//   $time_from_db = $row2['date'];
-//   $month_from_db =  date('m', strtotime($time_from_db));
-//   if($month_from_db === $month_from_db )
-//   {
-//   $amt_from_db = $row2['revenue_collected'];
-//   $total_amt=$total_amt+$amt_from_db;
-//   }
-//   }
-// if($totalamt<$monthly_collections)
-// {
-// //vehicle can go
-// }
-// else
-// {
-//   # code...
-// }
-// }
-//   else
-//   {
-// //vehicle has 0 revenues
-//   }
-// }
+
 
 ?>
 
 <script>
 function getConfirmation()
 {
-
-
    var retVal = confirm("Please select another vehicle. This one has already achieved our goal.");
    if( retVal == true )
    {
@@ -302,7 +259,7 @@ function getConfirmation()
    }
    else
    {
-       window.location.href = "index.php";
+       window.location.href = "detailed_queue.php?place_id='.$current_location";
       return false;
    }
 }
@@ -331,6 +288,9 @@ $amt = 0;
 
 //http://localhost/kiemwa/action.php?number_plate=KDB%20567%20G&current_location=Karatina&action=departing_report&destination=%20Nairobi&totalamt=0
 $totalamt=$_GET['totalamt'];
+//other_expenses=450$fuel_expenses=1000
+$fuel_expenses = $_GET['fuel_expenses'];
+$other_expenses = $_GET['other_expenses'];
 
 
  $sql= "UPDATE `vehiclle_queus` SET `timestamp` = CURRENT_TIMESTAMP  WHERE `number_plate` = '$number_plate' and `stage` = '$current_location'";
@@ -344,13 +304,15 @@ $fare = $totalamt;
 
    $sql= "INSERT INTO `revenues` (`sNo`, `vehicle`, `destination_from`, `destination_to`, `revenue_collected`, `date`)
    VALUES (NULL, '$number_plate', '$current_location', '$destination', '$fare', CURRENT_TIMESTAMP)";
+
+$sql = "INSERT INTO `revenues` (`sNo`, `vehicle`, `destination_from`, `destination_to`, `revenue_collected`, `date`, `fuel_expenses`, `other_expenses`)
+ VALUES (NULL, '$number_plate', '$current_location', '$destination', '$fare', CURRENT_TIMESTAMP, '$fuel_expenses', '$other_expenses')";
    mysqli_query($con,$sql);
 
-
     echo "sql query ->".$sql;
-
-
-
+$location= "Travelling to ".$destination;
+$sql = "UPDATE `vehicle_locations` SET `current_locatiom` = '$location' WHERE `number_plate` = '$number_plate' ";
+mysqli_query($con,$sql);
 
      $SQL="INSERT INTO `departure_records` (`id`, `number_plate`, `start_location`, `stop_destination`, `departure_time`) VALUES
            (NULL, '$number_plate', '$current_location', '$destination', CURRENT_TIMESTAMP)";
